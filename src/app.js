@@ -10,6 +10,21 @@ app.get("/test", (req, res) => {
   res.send("Hello from the test side!");
 });
 
+//This will only handles GET Calls to /user
+// app.get("/user/:userId/:name/:password", (req, res) => {
+//     console.log(req.params)
+//   res.send({ firstname: "Dharmik", lastname: "Ambaliya" });
+// });
+
+app.get(/.*fly$/, (req, res) => {
+    // console.log(req.query)
+  res.send({ firstname: "Dharmik", lastname: "Ambaliya" });
+});
+
+app.post("/user",(req,res) => {
+    res.send("Data send successfully");
+});
+ 
 app.get("/hello", (req, res) => {
   res.send("Hello hello hello!!!");
 });
