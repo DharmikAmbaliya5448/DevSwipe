@@ -1,26 +1,55 @@
 const express = require("express");
 const connectDB = require("./config/database.js");
+const bcrypt = require("bcrypt");
 const app = express();
 const User = require("./models/user.js");
-// const user = require("./models/user.js");
+const { validateSignUpData } = require("./utils/validation.js");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  //Creating the new instance of the User model
-  const user = new User(req.body);
-  // const user = new User({
-  //   firstName: "Virat",
-  //   lastName: "Kohli",
-  //   emailId: "virat@gmail.com",
-  //   age: 36,
-  //   gender: "Male",
-  // });
   try {
+    //Validation of Data
+    validateSignUpData(req);
+
+    const { firstName, lastName, emailId, password } = req.body;
+
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    //Creating the new instance of the User model
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
     await user.save();
     res.send("User Added Successfully!!");
   } catch (err) {
-    res.status(400).send("Error Saving the user:" + err.message);
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+
+    if (!user) {
+      throw new Error("Invalid Credentials!!!");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (isPasswordValid) {
+      res.send("Login Successfully...");
+    } else {
+      throw new Error("Password not correct");
+    }
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
   }
 });
 
@@ -87,9 +116,8 @@ app.patch("/user/:userId", async (req, res) => {
     if (!isUpdateAllowed) {
       throw new Error("Update not allowed");
     }
-    if(data?.skills.length > 10){
+    if (data?.skills.length > 10) {
       throw new Error("Skills can not be more than 10");
-      
     }
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after",
