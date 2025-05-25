@@ -12,6 +12,7 @@
 
 ## connectionRequestRouter
 - POST /request/send/:status/:userId
+- POST /request/review/:status/:userId
 
 - POST/request/send/interested/:userId
 - POST/request/send/ignored/:userId
@@ -21,7 +22,7 @@
 
 ## userRouter
 - GET/user/connections
-- GET/user/request/received
+- GET/user/requests/received
 - GET/user/feed - Gets you the profiles of other user on plateform
 
 Status: ignored, interested, accepeted, rejected
