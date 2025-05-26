@@ -62,8 +62,9 @@ requestRouter.post(
     // res.send(user.firstName + "Sent the connection request");
   }
 );
+
 requestRouter.post(
-  "/request/review/:status/:userId",
+  "/request/review/:status/:requestId",
   userAuth,
   async (req, res) => {
     try {
@@ -87,7 +88,7 @@ requestRouter.post(
       connectionRequest.status = status;
 
       const data = await connectionRequest.save();
-      res.json({ message: "Connection Request" + status, data });
+      res.json({ message: "Connection Request " + status, data });
     } catch (err) {
       res.status(400).send("ERROR" + err.message);
     }
