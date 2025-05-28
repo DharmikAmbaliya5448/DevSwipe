@@ -47,20 +47,20 @@ authRouter.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 8 * 3600000),
       });
 
-      res.send("Login Successfully...");
+      res.send(user);
     } else {
-      throw new Error("Password not correct");
+      throw new Error("Invalid Credentials!!!");
     }
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
 });
 
-authRouter.post("/logout",async(req,res) => {
-    res.cookie("token",null,{
-        expires: new Date(Date.now()),
-    });
-    res.send("Logout Successful!!!")
+authRouter.post("/logout", async (req, res) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
+  res.send("Logout Successful!!!");
 });
 
 module.exports = authRouter;
